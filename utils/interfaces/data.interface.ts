@@ -1,16 +1,29 @@
-interface UniswapContracts {
+import { Networks } from "./network.interface";
+
+export type UniswapData = {
+  [key in keyof typeof Networks]: UniswapContracts;
+};
+
+export interface UniswapContracts {
   swapRouter?: string;
   swapRouter02: string;
   quoterV2?: string;
-  wrappedETH: string;
 }
 
-interface UniswapNetworks {
-  sepolia?: UniswapContracts;
-  mainnet?: UniswapContracts;
-  ganache_local?: UniswapContracts;
+///
+
+export type CoinData = {
+  [key in keyof typeof Networks]: CoinList;
+};
+
+export interface CoinList {
+  DAI?: Coin;
+  USDT?: Coin;
+  WETH?: Coin;
 }
 
-interface UniswapData {
-  networks: UniswapNetworks;
+export interface Coin {
+  name: string;
+  decimals: number;
+  address: string;
 }

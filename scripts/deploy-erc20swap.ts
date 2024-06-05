@@ -1,6 +1,14 @@
 import { ethers, upgrades } from "hardhat";
-import { uniswapData } from "../utils/data";
 import { Network } from "ethers";
+import {
+  CoinList,
+  UniswapContracts,
+  NetworkJSON,
+  uniswapData,
+  coinData,
+  isValidNetwork,
+  Networks,
+} from "../utils";
 
 const feeTier = 3000;
 
@@ -14,19 +22,40 @@ async function main() {
   const chainId = Number(provider.chainId);
   console.log("Network chain id= ", chainId);
 
-  const providerData: NetworkJSON = provider.toJSON();
+  const providerData: NetworkJSON = provider.toJSON().name;
+  let networkName: string = providerData.name;
 
-  if (!providerData.name) {
-    throw new Error("No network name has been found");
+  console.log({ networkName });
+
+  if (!networkName) {
+    if (chainId == 31337) {
+      console.log("let's consider it as a local blockchain");
+      networkName = Networks.local;
+    }
   }
 
-  const data: UniswapContracts = uniswapData.networks[providerData.name];
+  if (!isValidNetwork(networkName)) {
+    throw new Error("No valid network");
+  }
 
-  if (!data || !data.swapRouter02 || !data.wrappedETH) {
+  const data: UniswapContracts = uniswapData[networkName];
+
+  console.log({ data });
+  if (!data || !data.swapRouter02) {
     throw new Error("No correct uniswap data has been found");
+  }
+  const coins: CoinList = coinData[networkName];
+
+  if (!coins) {
+    throw new Error("No correct coin list has been found");
+  }
+
+  if (!coins.WETH) {
+    throw new Error("No correct wrapped ETH data has been found");
   }
 
   console.log({ data });
+  console.log({ coins });
 
   const erc20SwapFactory = await ethers.getContractFactory(
     "ArbitraryERC20Swapper"
@@ -39,7 +68,7 @@ async function main() {
       deployerAddress,
       data.swapRouter02,
       feeTier,
-      data.wrappedETH,
+      coins.WETH.address,
     ],
     {
       initializer: "initialize",

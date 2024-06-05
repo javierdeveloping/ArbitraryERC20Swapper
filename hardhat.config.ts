@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
       accounts: [`${process.env.TEST_PRIVATE_KEY}`],
       chainId: 1,
     },
-    ganache_local: {
+    local: {
       url: process.env.GANACHE_PROVIDER,
       /*       accounts: [`${process.env.GANACHE_PRIVATE_KEY}`], */
     },
