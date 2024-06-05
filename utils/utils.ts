@@ -50,6 +50,9 @@ export async function getNetworkName(provider: Network): Promise<string> {
       case 11155111:
         return Networks.sepolia;
 
+      case 1337:
+        return Networks.local;
+
       case 31337:
         return Networks.local;
 

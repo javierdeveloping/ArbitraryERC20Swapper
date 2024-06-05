@@ -4,6 +4,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /// if a smaller size contract is desired, for swap purposes only IV3SwapRouter is required
 /// In expenses of future upgradeability, compatibility with V2 and V3 pools is considered using swapRouter02 contract
@@ -12,12 +13,13 @@ import "./interfaces/ISwapRouter02.sol";
 import "./interfaces/IERC20Swapper.sol";
 import "./interfaces/IWETH9.sol";
 
-contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, ERC20Swapper {
+contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, UUPSUpgradeable, ERC20Swapper {
 
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");    
     //for upgradeability reasons   
     bytes32 public constant SPECIAL_ROLE = keccak256("SPECIAL_ROLE");
 
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     /// @dev address of Uniswap router used to swap Ether to desired arbitrary token 
     /// SwapRouter02 supports swaps in both V2 and V3 pools
     /// It is an upgraded version of SwapRouter contract within Uniswap v3 protocol
@@ -34,7 +36,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     address private wrappedETH;
 
     ///Two basic events when an admin makes modifications. 
-    //No events for user actions in order to save gas.
+    ///No events for user actions in order to save gas.
    event ChangeFeeTier(uint24 feeTier);
    event ChangeSwapRouter(address swapRouter);
     
@@ -43,24 +45,28 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         _disableInitializers();
     }
 
-    function initialize(address _defaultAdmin, address _admin, address _swapRouter,uint24 _feeTier, address _wrappedETH)
+    function initialize(address _defaultAdmin, address _admin, address _upgrader, address _swapRouter,uint24 _feeTier, address _wrappedETH)
         initializer public
     {
         __Pausable_init();
         __AccessControl_init();
         __ReentrancyGuard_init();
+        __UUPSUpgradeable_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, _defaultAdmin);
-        _grantRole(ADMIN_ROLE, _defaultAdmin);
-
-        if(_admin != _defaultAdmin){
-            _grantRole(ADMIN_ROLE, _admin);
-        }
+        _grantRole(ADMIN_ROLE, _admin);
+        _grantRole(UPGRADER_ROLE,_upgrader);
 
         swapRouter = _swapRouter;
         feeTier = _feeTier;
         wrappedETH = _wrappedETH;
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyRole(UPGRADER_ROLE)
+        override
+    {}
 
     /// @dev function to change
   
@@ -108,6 +114,8 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     function unpause() external onlyRole(ADMIN_ROLE) {
         _unpause();
     }
+
+
 
     //Non state changing functions
 

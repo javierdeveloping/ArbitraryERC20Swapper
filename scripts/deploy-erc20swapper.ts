@@ -12,6 +12,7 @@ import {
   ZERO_ADDRESS,
   getNetworkName,
 } from "../utils";
+import { ArbitraryERC20Swapper__factory } from "../typechain-types";
 
 const feeTier = 3000;
 
@@ -31,13 +32,13 @@ async function main() {
   console.log({ uniswapContracts });
   console.log({ coins });
 
-  const erc20SwapFactory = await ethers.getContractFactory(
-    "ArbitraryERC20Swapper"
-  );
+  const erc20SwapFactory: ArbitraryERC20Swapper__factory =
+    await ethers.getContractFactory("ArbitraryERC20Swapper");
   console.log("Deploying ArbitraryERC20Swapper...");
   const erc20swap = await upgrades.deployProxy(
     erc20SwapFactory,
     [
+      deployerAddress,
       deployerAddress,
       deployerAddress,
       uniswapContracts.swapRouter02,
@@ -51,10 +52,10 @@ async function main() {
   const erc20SwapAddress = await erc20swap.getAddress();
 
   console.log("ArbitraryERC20Swapper deployed to:", erc20SwapAddress);
-  const proxyAdminAddress = await upgrades.erc1967.getImplementationAddress(
+  const implementationAddress = await upgrades.erc1967.getImplementationAddress(
     erc20SwapAddress
   );
-  console.log({ proxyAdminAddress });
+  console.log({ implementationAddress });
 }
 
 main()

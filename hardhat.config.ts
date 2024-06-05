@@ -43,7 +43,7 @@ const config: HardhatUserConfig = {
       chainId: 1,
     },
     local: {
-      url: process.env.GANACHE_PROVIDER,
+      url: process.env.GANACHE_OR_LOCAL_RPC_URL,
       /*       accounts: [`${process.env.GANACHE_PRIVATE_KEY}`], */
     },
   },
