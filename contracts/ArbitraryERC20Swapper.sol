@@ -20,7 +20,9 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     /// @dev address of Uniswap router used to swap Ether to desired arbitrary token 
     /// SwapRouter02 supports swaps in both V2 and V3 pools
     /// It is an upgraded version of SwapRouter contract within Uniswap v3 protocol
-    ISwapRouter02 private swapRouter;
+    /// Address is just saved as a state variable. In the future if this swap needs to be updated to a new interface,
+    /// type casting this address when needed will be an easy way to work
+    address private swapRouter;
 
     /// @dev The fee tier of the pool, used to determine the correct pool contract in which to execute the swap
     /// 0.3% fee pools (feeTier = 3000) are the rule in Uniswap v2, but V3 introduces multiple fee tiers
@@ -39,7 +41,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         _disableInitializers();
     }
 
-    function initialize(address _defaultAdmin, address _admin, ISwapRouter02 _swapRouter,uint24 _feeTier, address _wrappedETH)
+    function initialize(address _defaultAdmin, address _admin, address _swapRouter,uint24 _feeTier, address _wrappedETH)
         initializer public
     {
         __Pausable_init();
@@ -69,7 +71,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     function changeSwapRouter(address _swapRouter) external onlyRole(ADMIN_ROLE){
 
         require(_swapRouter == address(swapRouter), "same swap router address has been given");
-        swapRouter = ISwapRouter02(_swapRouter);
+        swapRouter = _swapRouter;
         emit ChangeSwapRouter(_swapRouter);
     }
    
@@ -88,7 +90,8 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
                 sqrtPriceLimitX96: 0
             });
         // Call to exactInputSingle to executes the swap.
-        return swapRouter.exactInputSingle{value:msg.value}(params);
+        // type casting swap router address
+        return ISwapRouter02(swapRouter).exactInputSingle{value:msg.value}(params);
     }
 
     function pause() external onlyRole(ADMIN_ROLE) {
@@ -97,6 +100,12 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
 
     function unpause() external onlyRole(ADMIN_ROLE) {
         _unpause();
+    }
+
+    //Non state changing functions
+
+    function configuration() external pure returns(address swapRouter, uint feeTier, address wrappedETH) {
+        return (swapRouter, feeTier, wrappedETH);
     }
 
 }

@@ -2,6 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "dotenv/config";
 import "@openzeppelin/hardhat-upgrades";
+import "@nomicfoundation/hardhat-ethers";
 
 const config: HardhatUserConfig = {
   solidity: {
