@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /// if a smaller size contract is desired, for swap purposes only IV3SwapRouter is required
 /// In expenses of future upgradeability, compatibility with V2 and V3 pools is considered using swapRouter02 contract
+/// Applying multicall
 import "./interfaces/ISwapRouter02.sol";
 import "./interfaces/IERC20Swapper.sol";
 import "./interfaces/IWETH9.sol";
@@ -21,7 +22,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     /// SwapRouter02 supports swaps in both V2 and V3 pools
     /// It is an upgraded version of SwapRouter contract within Uniswap v3 protocol
     /// Address is just saved as a state variable. In the future if this swap needs to be updated to a new interface,
-    /// type casting this address when needed will be an easy way to work
+    /// type casting this address inside the functions when needed is an easy way to work
     address private swapRouter;
 
     /// @dev The fee tier of the pool, used to determine the correct pool contract in which to execute the swap
@@ -104,7 +105,9 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
 
     //Non state changing functions
 
-    function configuration() external pure returns(address swapRouter, uint feeTier, address wrappedETH) {
+    function configuration() external view returns(address uniswapRouter, uint fee, address weth) {
+        return (swapRouter,feeTier,wrappedETH);
+
     }
 
 }
