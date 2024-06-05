@@ -20,7 +20,7 @@ export const uniswapData: UniswapData = {
 
 export const coinData: CoinData = {
   mainnet: {
-    USDT: {
+    DAI: {
       name: "DAI",
       decimals: 18,
       address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
@@ -37,7 +37,7 @@ export const coinData: CoinData = {
     },
   },
   sepolia: {
-    USDT: {
+    DAI: {
       name: "DAI",
       decimals: 18,
       address: "",
@@ -54,7 +54,7 @@ export const coinData: CoinData = {
     },
   },
   local: {
-    USDT: {
+    DAI: {
       name: "DAI",
       decimals: 18,
       address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",

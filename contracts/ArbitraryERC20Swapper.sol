@@ -21,6 +21,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     /// @dev address of Uniswap router used to swap Ether to desired arbitrary token 
     /// SwapRouter02 supports swaps in both V2 and V3 pools
     /// It is an upgraded version of SwapRouter contract within Uniswap v3 protocol
+    /// SwapRouter02 is mainly designed to be multicall
     /// Address is just saved as a state variable. In the future if this swap needs to be updated to a new interface,
     /// type casting this address inside the functions when needed is an easy way to work
     address private swapRouter;
@@ -32,7 +33,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     
     address private wrappedETH;
 
-    /// two basic events when an admin makes modifications. 
+    ///Two basic events when an admin makes modifications. 
     //No events for user actions in order to save gas.
    event ChangeFeeTier(uint24 feeTier);
    event ChangeSwapRouter(address swapRouter);
@@ -64,14 +65,14 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     /// @dev function to change
   
     function changeFeeTier(uint24 _feeTier) external onlyRole(ADMIN_ROLE){
-        require(_feeTier == feeTier, "same feeTier has been given");
+        require(_feeTier != feeTier, "same feeTier has been given");
         feeTier = _feeTier;
         emit ChangeFeeTier(_feeTier);
     }
 
     function changeSwapRouter(address _swapRouter) external onlyRole(ADMIN_ROLE){
 
-        require(_swapRouter == address(swapRouter), "same swap router address has been given");
+        require(_swapRouter != swapRouter, "same swap router address has been given");
         swapRouter = _swapRouter;
         emit ChangeSwapRouter(_swapRouter);
     }
@@ -93,6 +94,11 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         // Call to exactInputSingle to executes the swap.
         // type casting swap router address
         return ISwapRouter02(swapRouter).exactInputSingle{value:msg.value}(params);
+
+        //Note: if deadline parameter wants to be included but working with swapRouter02 is desired,
+        //multicall method should be implemented with a specific deadline (UNIX timestamp)
+        //function multicall(uint256 deadline, bytes[] calldata data) external payable returns (bytes[] memory results);
+
     }
 
     function pause() external onlyRole(ADMIN_ROLE) {
