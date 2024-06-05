@@ -105,7 +105,6 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     //Non state changing functions
 
     function configuration() external pure returns(address swapRouter, uint feeTier, address wrappedETH) {
-        return (swapRouter, feeTier, wrappedETH);
     }
 
 }

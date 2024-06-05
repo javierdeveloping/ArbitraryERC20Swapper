@@ -8,6 +8,9 @@ import {
   coinData,
   isValidNetwork,
   Networks,
+  getCoinsAndUniswapData,
+  ZERO_ADDRESS,
+  getNetworkName,
 } from "../utils";
 
 const feeTier = 3000;
@@ -19,42 +22,13 @@ async function main() {
   console.log({ deployerAddress });
 
   let provider: Network = await ethers.provider.getNetwork();
-  const chainId = Number(provider.chainId);
-  console.log("Network chain id= ", chainId);
 
-  const providerData: NetworkJSON = provider.toJSON().name;
-  let networkName: string = providerData.name;
+  let networkName: string = await getNetworkName(provider);
+
+  const { uniswapContracts, coins } = await getCoinsAndUniswapData(networkName);
 
   console.log({ networkName });
-
-  if (!networkName) {
-    if (chainId == 31337) {
-      console.log("let's consider it as a local blockchain");
-      networkName = Networks.local;
-    }
-  }
-
-  if (!isValidNetwork(networkName)) {
-    throw new Error("No valid network");
-  }
-
-  const data: UniswapContracts = uniswapData[networkName];
-
-  console.log({ data });
-  if (!data || !data.swapRouter02) {
-    throw new Error("No correct uniswap data has been found");
-  }
-  const coins: CoinList = coinData[networkName];
-
-  if (!coins) {
-    throw new Error("No correct coin list has been found");
-  }
-
-  if (!coins.WETH) {
-    throw new Error("No correct wrapped ETH data has been found");
-  }
-
-  console.log({ data });
+  console.log({ uniswapContracts });
   console.log({ coins });
 
   const erc20SwapFactory = await ethers.getContractFactory(
@@ -66,7 +40,7 @@ async function main() {
     [
       deployerAddress,
       deployerAddress,
-      data.swapRouter02,
+      uniswapContracts.swapRouter02,
       feeTier,
       coins.WETH.address,
     ],

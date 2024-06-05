@@ -17,9 +17,9 @@ export type CoinData = {
 };
 
 export interface CoinList {
-  DAI?: Coin;
   USDT?: Coin;
-  WETH?: Coin;
+  USDT?: Coin;
+  WETH: Coin;
 }
 
 export interface Coin {
