@@ -62,11 +62,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         wrappedETH = _wrappedETH;
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        onlyRole(UPGRADER_ROLE)
-        override
-    {}
+
 
     /// @dev function to change
   
@@ -82,6 +78,20 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         swapRouter = _swapRouter;
         emit ChangeSwapRouter(_swapRouter);
     }
+
+    function pause() external onlyRole(ADMIN_ROLE) {
+        _pause();
+    }
+
+    function unpause() external onlyRole(ADMIN_ROLE) {
+        _unpause();
+    }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyRole(UPGRADER_ROLE)
+        override
+    {}
    
     function swapEtherToToken(address _token, uint _minAmount) external payable whenNotPaused nonReentrant returns (uint256) {
       
@@ -106,15 +116,6 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         //function multicall(uint256 deadline, bytes[] calldata data) external payable returns (bytes[] memory results);
 
     }
-
-    function pause() external onlyRole(ADMIN_ROLE) {
-        _pause();
-    }
-
-    function unpause() external onlyRole(ADMIN_ROLE) {
-        _unpause();
-    }
-
 
 
     //Non state changing functions

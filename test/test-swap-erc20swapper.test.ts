@@ -1,6 +1,6 @@
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
-import { BaseContract, Contract, Network } from "ethers";
+import { Network } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { ZERO_ADDRESS, getCoinsAndUniswapData, getNetworkName } from "../utils";
@@ -9,7 +9,6 @@ import {
   ArbitraryERC20Swapper,
   ArbitraryERC20Swapper__factory,
 } from "../typechain-types";
-import { ArbitraryERC20SwapperInterface } from "../typechain-types/contracts/ArbitraryERC20Swapper";
 
 let feeTier = 3000;
 
@@ -65,22 +64,24 @@ describe("Swap feature", async function () {
     //Get a new signer as the user who will do the swap
     const user = others[1];
 
-    // Check the balance of the user
-    let balance = ethers.formatUnits(await ethers.provider.getBalance(user));
-    console.log({ balance });
-
     //Show DAI coin data
     console.log(coins.DAI);
 
     if (!coins.DAI) {
       expect.fail("No info for DAI token");
     }
+
+    // Check the balance of the user
+    const beforeETHBalance = await ethers.provider.getBalance(user);
+    console.log({ beforeETHBalance: ethers.formatUnits(beforeETHBalance) });
+
     const token = coins.DAI;
     const tokenContract = new ethers.Contract(token.address, ERC20Abi, user);
     // Check DAI balance of the user
     const expandedTokenBalanceBefore = await tokenContract.balanceOf(
       user.address
     );
+
     const tokenBalanceBefore = Number(
       ethers.formatUnits(expandedTokenBalanceBefore, token.decimals)
     );
@@ -88,19 +89,17 @@ describe("Swap feature", async function () {
     console.log({ tokenBalanceBefore });
 
     const amountIn = ethers.parseEther("0.1");
+    const minimumAmount = ethers.parseUnits("100", token.decimals);
 
     //swap 0.1 ETH to DAI
     const swap = await arbitraryERC20Swapper
       .connect(user)
-      .swapEtherToToken(
-        token.address,
-        ethers.parseUnits("100", token.decimals),
-        {
-          gasLimit: 300000,
-          value: amountIn,
-        }
-      );
-    swap.wait();
+      .swapEtherToToken(token.address, minimumAmount, {
+        gasLimit: 300000,
+        value: amountIn,
+      });
+    const tx = await swap.wait();
+    console.log("Gas used for swap: ", tx?.gasUsed.toString());
     // Check DAI balance of the user after swapping
     const expandedTokenBalanceAfter = await tokenContract.balanceOf(
       user.address
@@ -110,15 +109,19 @@ describe("Swap feature", async function () {
     );
 
     // Test that DAI balance is greater than the initial one
-    expect(tokenBalanceAfter).is.greaterThan(tokenBalanceBefore);
+    expect(expandedTokenBalanceAfter).is.greaterThanOrEqual(
+      expandedTokenBalanceBefore + minimumAmount
+    );
 
     console.log({ tokenBalanceAfter });
 
     // Get the balance of the user
-    balance = ethers.formatUnits(await ethers.provider.getBalance(user));
+    const afterETHBalance = await ethers.provider.getBalance(user);
+    expect(afterETHBalance).is.lessThanOrEqual(beforeETHBalance - amountIn);
 
-    console.log({ balance });
+    console.log({ afterETHBalance: ethers.formatUnits(afterETHBalance) });
   });
+
   it("Swap 0.1 ether to Tether token", async function () {
     const {
       signer,
@@ -132,12 +135,12 @@ describe("Swap feature", async function () {
     //Get a new signer as the user who will do the swap
     const user = others[1];
 
-    // Check the balance of the user
-    let balance = ethers.formatUnits(await ethers.provider.getBalance(user));
-    console.log({ balance });
-
     //Show USDT coin data
     console.log(coins.USDT);
+
+    // Check the balance of the user
+    const beforeETHBalance = await ethers.provider.getBalance(user);
+    console.log({ beforeETHBalance: ethers.formatUnits(beforeETHBalance) });
 
     if (!coins.USDT) {
       expect.fail("No info for USDT token");
@@ -148,6 +151,7 @@ describe("Swap feature", async function () {
     const expandedTokenBalanceBefore = await tokenContract.balanceOf(
       user.address
     );
+
     const tokenBalanceBefore = Number(
       ethers.formatUnits(expandedTokenBalanceBefore, token.decimals)
     );
@@ -155,19 +159,18 @@ describe("Swap feature", async function () {
     console.log({ tokenBalanceBefore });
 
     const amountIn = ethers.parseEther("0.1");
+    const minimumAmount = ethers.parseUnits("100", token.decimals);
+
     //swap 0.1 ETH to DAI
 
     const swap = await arbitraryERC20Swapper
       .connect(user)
-      .swapEtherToToken(
-        token.address,
-        ethers.parseUnits("100", token.decimals),
-        {
-          gasLimit: 300000,
-          value: amountIn,
-        }
-      );
-    swap.wait();
+      .swapEtherToToken(token.address, minimumAmount, {
+        gasLimit: 300000,
+        value: amountIn,
+      });
+    const tx = await swap.wait();
+    console.log("Gas used for swap: ", tx?.gasUsed.toString());
     // Check DAI balance of the user after swapping
     const expandedTokenBalanceAfter = await tokenContract.balanceOf(
       user.address
@@ -177,15 +180,19 @@ describe("Swap feature", async function () {
     );
 
     // Test that DAI balance is greater than the initial one
-    expect(tokenBalanceAfter).is.greaterThan(tokenBalanceBefore);
+    expect(expandedTokenBalanceAfter).is.greaterThanOrEqual(
+      expandedTokenBalanceBefore + minimumAmount
+    );
 
     console.log({ tokenBalanceAfter });
 
     // Get the balance of the user
-    balance = ethers.formatUnits(await ethers.provider.getBalance(user));
+    const afterETHBalance = await ethers.provider.getBalance(user);
+    expect(afterETHBalance).is.lessThanOrEqual(beforeETHBalance - amountIn);
 
-    console.log({ balance });
+    console.log({ afterETHBalance: ethers.formatUnits(afterETHBalance) });
   });
+
   it("Too little received, 1ETH = almost 4000USDT, not 5000", async function () {
     const {
       signer,
@@ -213,27 +220,17 @@ describe("Swap feature", async function () {
     );
 
     const amountIn = ethers.parseEther("0.1");
-
+    const minimumAmount = ethers.parseUnits("10000", token.decimals);
     //swap 0.1 ETH to USDT
     //Min amount set to 10.000USDT per ETH
     await expect(
       arbitraryERC20Swapper
         .connect(user)
-        .swapEtherToToken(
-          token.address,
-          ethers.parseUnits("10000", token.decimals),
-          {
-            gasLimit: 300000,
-            value: amountIn,
-          }
-        )
+        .swapEtherToToken(token.address, minimumAmount, {
+          gasLimit: 300000,
+          value: amountIn,
+        })
     ).to.be.revertedWith("Too little received");
-
-    const expandedTokenBalanceAfter = await tokenContract.balanceOf(
-      signer.address
-    );
-
-    expect(expandedTokenBalanceAfter).is.equal(expandedTokenBalanceBefore);
   });
 });
 
