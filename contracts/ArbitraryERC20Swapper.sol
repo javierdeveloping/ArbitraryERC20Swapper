@@ -17,7 +17,7 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
 
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");    
     //for upgradeability reasons   
-    bytes32 public constant SPECIAL_ROLE = keccak256("SPECIAL_ROLE");
+    bytes32 public constant AUXILIAR_ROLE = keccak256("AUXILIAR_ROLE");
 
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     /// @dev address of Uniswap router used to swap Ether to desired arbitrary token 
@@ -39,6 +39,10 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
     ///No events for user actions in order to save gas.
    event ChangeFeeTier(uint24 feeTier);
    event ChangeSwapRouter(address swapRouter);
+
+   //depending on gas optimization and/or if swap use is studied, this event can be emmitted
+   //each indexed parameters implied more gas
+   //event Swap(address indexed user, address indexed token, uint minAmount, uint amountOut);
     
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -92,8 +96,13 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
         onlyRole(UPGRADER_ROLE)
         override
     {}
+
+    /// @dev Swaps msg.value for as much as possible of ERC20 token but receiving a fixed minimum amount at least
+    /// @param _token: The address of ERC-20 token to swap
+    /// @param _minAmount The minimum amount of tokens transferred to msg.sender
+    /// @return amountOut The actual amount of transferred tokens
    
-    function swapEtherToToken(address _token, uint _minAmount) external payable whenNotPaused nonReentrant returns (uint256) {
+    function swapEtherToToken(address _token, uint _minAmount) external payable whenNotPaused nonReentrant returns (uint256 amountOut) {
       
         // Create the params that will be used to execute the swap
         // sqrtPriceLimitX96 sets slippage limits, omitting for simplicity
@@ -109,12 +118,13 @@ contract ArbitraryERC20Swapper is Initializable, AccessControlUpgradeable, Reent
             });
         // Call to exactInputSingle to executes the swap.
         // type casting swap router address
-        return ISwapRouter02(swapRouter).exactInputSingle{value:msg.value}(params);
+        amountOut= ISwapRouter02(swapRouter).exactInputSingle{value:msg.value}(params);
 
-        //Note: if deadline parameter wants to be included but working with swapRouter02 is desired,
+        //Note: if including deadline parameter while working with swapRouter02 is needed,
         //multicall method should be implemented with a specific deadline (UNIX timestamp)
         //function multicall(uint256 deadline, bytes[] calldata data) external payable returns (bytes[] memory results);
-
+       
+       //optional: emit Swap(msg.sender,_token,_minAmount,amountOut)
     }
 
 
