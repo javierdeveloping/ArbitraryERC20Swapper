@@ -27,3 +27,13 @@ export interface Coin {
   decimals: number;
   address: string;
 }
+
+// DEPLOYMENT DATA
+
+export type DeploymentData = {
+  [key in keyof typeof Networks]: DeployedContracts;
+};
+
+export interface DeployedContracts {
+  erc20Swapper?: string;
+}

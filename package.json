@@ -37,6 +37,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "deploy-erc20swapper": "npx hardhat run ./scripts/deploy-erc20swapper.ts --network ",
-    "test-swap-erc20swapper": "npx hardhat test ./test/test-swap-erc20swapper.test.ts --network "
+    "test-swap-erc20swapper": "npx hardhat test ./test/test-swap-erc20swapper.test.ts --network ",
+    "swap-ether-to-token": "npx hardhat run ./scripts/swap-ether-to-token.ts --network "
   }
 }

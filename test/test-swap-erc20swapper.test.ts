@@ -17,7 +17,7 @@ async function swapRouterFixture() {
 
   let provider: Network = await ethers.provider.getNetwork();
   let networkName = await getNetworkName(provider);
-  const { uniswapContracts, coins } = await getCoinsAndUniswapData(networkName);
+  const { uniswapContracts, coins } = getCoinsAndUniswapData(networkName);
 
   // Get the list of signers
   const [signer, ...rest] = await ethers.getSigners();
@@ -98,7 +98,9 @@ describe("Swap feature", async function () {
         gasLimit: 300000,
         value: amountIn,
       });
+
     const tx = await swap.wait();
+
     console.log("Gas used for swap: ", tx?.gasUsed.toString());
     // Check DAI balance of the user after swapping
     const expandedTokenBalanceAfter = await tokenContract.balanceOf(
@@ -193,7 +195,7 @@ describe("Swap feature", async function () {
     console.log({ afterETHBalance: ethers.formatUnits(afterETHBalance) });
   });
 
-  it("Too little received, 1ETH = almost 4000USDT, not 100000USDT", async function () {
+  it("Too little received, 1ETH = almost 4000USDT, not 100.000", async function () {
     const {
       signer,
       others,
@@ -219,11 +221,10 @@ describe("Swap feature", async function () {
       signer.address
     );
 
-    //swap 0.1 ETH to USDT
-    //Min amount set to 100.000USDT per ETH
     const amountIn = ethers.parseEther("0.1");
     const minimumAmount = ethers.parseUnits("10000", token.decimals);
-
+    //swap 0.1 ETH to USDT
+    //Min amount set to 10.000USDT per ETH
     await expect(
       arbitraryERC20Swapper
         .connect(user)
@@ -295,3 +296,34 @@ describe("Change configuration", async function () {
     expect(config[0]).is.equal(newSwapRouterAddress);
   });
 });
+
+/*   it("Quoter", async () => {
+    const token = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+    const tokenDecimals = 6;
+    const ethAmount = "0.1";
+    const minOut = "5000";
+
+    const simpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
+    const simpleSwap = await simpleSwapFactory.deploy(
+      SwapRouterAddress,
+      quoterV2Address
+    );
+    await simpleSwap.deployed();
+
+
+    let signers = await hre.ethers.getSigners();
+
+
+    const [signer] = await ethers.getSigners();
+
+    const tx = await simpleSwap.quoteExactInputSingleWETHDai(
+      hre.ethers.utils.parseUnits("100", DAI_DECIMALS),
+      0,
+      {
+        gasLimit: 300000,
+      }
+    );
+    const answer = await tx.wait();
+    console.log({ tx });
+    console.log({ answer });
+  }); */

@@ -1,6 +1,20 @@
-import { CoinData, UniswapData } from "./interfaces/data.interface";
+import {
+  CoinData,
+  UniswapData,
+  DeploymentData,
+} from "./interfaces/data.interface";
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+export const deploymentData: DeploymentData = {
+  mainnet: {},
+  sepolia: {
+    erc20Swapper: "0xA247Ca6eaaD3d8798F885cd03f3dd8EE98dB1FE5",
+  },
+  local: {
+    erc20Swapper: "0xA247Ca6eaaD3d8798F885cd03f3dd8EE98dB1FE5",
+  },
+};
 
 export const uniswapData: UniswapData = {
   mainnet: {

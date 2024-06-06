@@ -26,7 +26,7 @@ async function main() {
 
   let networkName: string = await getNetworkName(provider);
 
-  const { uniswapContracts, coins } = await getCoinsAndUniswapData(networkName);
+  const { uniswapContracts, coins } = getCoinsAndUniswapData(networkName);
 
   console.log({ networkName });
   console.log({ uniswapContracts });

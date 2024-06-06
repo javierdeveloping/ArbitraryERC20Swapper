@@ -3,6 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "dotenv/config";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomicfoundation/hardhat-ethers";
+import "./scripts/tasks.ts";
 
 const config: HardhatUserConfig = {
   solidity: {
