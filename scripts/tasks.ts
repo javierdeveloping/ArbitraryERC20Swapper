@@ -67,10 +67,10 @@ task("swap", "Swap ether to token'")
       signer.address
     );
 
-    const tokenBalanceBefore = Number(
-      ethers.formatUnits(expandedTokenBalanceBefore, tokenDecimals)
+    const tokenBalanceBefore = ethers.formatUnits(
+      expandedTokenBalanceBefore,
+      tokenDecimals
     );
-
     console.log({ tokenBalanceBefore });
     const amountIn = ethers.parseEther(amountETH);
     const minimumAmountOut = ethers.parseUnits(minAmount, tokenDecimals);
@@ -94,9 +94,9 @@ task("swap", "Swap ether to token'")
     const expandedTokenBalanceAfter = await tokenContract.balanceOf(
       signer.address
     );
-    const tokenBalanceAfter = Number(
-      ethers.formatUnits(expandedTokenBalanceAfter, tokenDecimals)
+    const tokenBalanceAfter = ethers.formatUnits(
+      expandedTokenBalanceAfter,
+      tokenDecimals
     );
-
     console.log({ tokenBalanceAfter });
   });

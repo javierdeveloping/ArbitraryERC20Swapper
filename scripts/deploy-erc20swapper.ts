@@ -1,18 +1,7 @@
-import { ethers, upgrades } from "hardhat";
 import { Network } from "ethers";
-import {
-  CoinList,
-  UniswapContracts,
-  NetworkJSON,
-  uniswapData,
-  coinData,
-  isValidNetwork,
-  Networks,
-  getCoinsAndUniswapData,
-  ZERO_ADDRESS,
-  getNetworkName,
-} from "../utils";
+import { ethers, upgrades } from "hardhat";
 import { ArbitraryERC20Swapper__factory } from "../typechain-types";
+import { getCoinsAndUniswapData, getNetworkName } from "../utils";
 
 const feeTier = 3000;
 

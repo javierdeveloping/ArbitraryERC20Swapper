@@ -82,10 +82,10 @@ describe("Swap feature", async function () {
       user.address
     );
 
-    const tokenBalanceBefore = Number(
-      ethers.formatUnits(expandedTokenBalanceBefore, token.decimals)
+    const tokenBalanceBefore = ethers.formatUnits(
+      expandedTokenBalanceBefore,
+      token.decimals
     );
-
     console.log({ tokenBalanceBefore });
 
     const amountIn = ethers.parseEther("0.1");
@@ -103,13 +103,13 @@ describe("Swap feature", async function () {
 
     console.log("Gas used for swap: ", tx?.gasUsed.toString());
     // Check DAI balance of the user after swapping
-    const expandedTokenBalanceAfter = await tokenContract.balanceOf(
-      user.address
+    const expandedTokenBalanceAfter = BigInt(
+      await tokenContract.balanceOf(user.address)
     );
-    const tokenBalanceAfter = Number(
-      ethers.formatUnits(expandedTokenBalanceAfter, token.decimals)
+    const tokenBalanceAfter = ethers.formatUnits(
+      expandedTokenBalanceAfter,
+      token.decimals
     );
-
     // Test that DAI balance is greater than the initial one
     expect(expandedTokenBalanceAfter).is.greaterThanOrEqual(
       expandedTokenBalanceBefore + minimumAmount
@@ -154,10 +154,10 @@ describe("Swap feature", async function () {
       user.address
     );
 
-    const tokenBalanceBefore = Number(
-      ethers.formatUnits(expandedTokenBalanceBefore, token.decimals)
+    const tokenBalanceBefore = ethers.formatUnits(
+      expandedTokenBalanceBefore,
+      token.decimals
     );
-
     console.log({ tokenBalanceBefore });
 
     const amountIn = ethers.parseEther("0.1");
@@ -177,10 +177,10 @@ describe("Swap feature", async function () {
     const expandedTokenBalanceAfter = await tokenContract.balanceOf(
       user.address
     );
-    const tokenBalanceAfter = Number(
-      ethers.formatUnits(expandedTokenBalanceAfter, token.decimals)
+    const tokenBalanceAfter = ethers.formatUnits(
+      expandedTokenBalanceAfter,
+      token.decimals
     );
-
     // Test that DAI balance is greater than the initial one
     expect(expandedTokenBalanceAfter).is.greaterThanOrEqual(
       expandedTokenBalanceBefore + minimumAmount
