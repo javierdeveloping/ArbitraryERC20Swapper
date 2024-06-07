@@ -78,8 +78,10 @@ The proposed testing process will load Uniswap and coins data related to Sepolia
 1.  Testing deployment
 
     ```
-    yarn run deploy-erc20swapper hardhat|localhost|local
+    yarn run deploy-erc20swapper hardhat|local|localhost
     ```
+
+    localhost can be used as network if `npx hardhat node` or `npx hardhat node --fork "rpc_url"` has been executed before
 
 2.  Forking Sepolia, deploying a new ERC20 Swapper, testing features and executing a swap
 
@@ -104,9 +106,7 @@ The proposed testing process will load Uniswap and coins data related to Sepolia
     That address corresponds to DAI token in Sepolia.
 
     ```
-    npx hardhat quote
-    --token 0x68194a729C2450ad26072b3D33ADaCbcef39D574
-    --fee 3100 --eth 0.001 --network local
+    npx hardhat quote --token 0x68194a729C2450ad26072b3D33ADaCbcef39D574 --fee 3100 --eth 0.001 --network localhost
     ```
 
     This will produce a command that can be copied and executed to perform the swap.
@@ -116,7 +116,7 @@ The proposed testing process will load Uniswap and coins data related to Sepolia
     Copy the command produce by the get quote task or configure your own command for this task.
 
     ```
-    npx hardhat swap --eth 0.001 --token 0x68194a729C2450ad26072b3D33ADaCbcef39D574 --minamount 2.913982 --network local
+    npx hardhat swap --eth 0.001 --token 0x68194a729C2450ad26072b3D33ADaCbcef39D574 --minamount 2.913982 --network localhost
     ```
 
 4.  **Always be aware of connecting your wallet to trusted, safe and official services**. Contract has been verified and swapEtherToken can be called from Etherscan.
