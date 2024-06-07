@@ -8,7 +8,6 @@ export interface NetworkJSON {
 export enum Networks {
   mainnet = "mainnet",
   sepolia = "sepolia",
-  local = "local",
 }
 
 export function isValidNetwork<T>(value: any): value is T[keyof T] {

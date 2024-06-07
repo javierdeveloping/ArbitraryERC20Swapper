@@ -11,6 +11,7 @@ import {
   Networks,
   isValidNetwork,
 } from "./interfaces/network.interface";
+import { ChainId } from "@uniswap/sdk-core";
 
 export function getCoinsAndUniswapData(networkName: string): {
   uniswapContracts: UniswapContracts;
@@ -45,8 +46,6 @@ export async function getNetworkName(provider: Network): Promise<string> {
   const providerData: NetworkJSON = provider.toJSON().name;
   let networkName: string = providerData.name;
 
-  console.log({ networkName });
-
   if (!networkName) {
     switch (chainId) {
       case 1:
@@ -55,11 +54,16 @@ export async function getNetworkName(provider: Network): Promise<string> {
       case 11155111:
         return Networks.sepolia;
 
+      //if working with forks or locally, sepolia is considered regarding test data
+      //such as uniswap and coins data.
+      //if a fork is created from mainnet, 31337 (usually hardhat) and 1337 (ganache) cases can be changed to Network.mainnet
       case 1337:
-        return Networks.local;
+        return Networks.sepolia;
+      //return Networks.mainnet;
 
       case 31337:
-        return Networks.local;
+        return Networks.sepolia;
+      //return Networks.mainnet;
 
       default:
         return networkName;

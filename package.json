@@ -30,9 +30,11 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "5.0.2",
+    "@uniswap/sdk-core": "^5.1.0",
     "@uniswap/swap-router-contracts": "^1.2.1",
     "@uniswap/v3-core": "^1.0.1",
-    "@uniswap/v3-periphery": "^1.4.1"
+    "@uniswap/v3-periphery": "^1.4.1",
+    "@uniswap/v3-sdk": "^3.12.0"
   },
   "scripts": {
     "compile": "npx hardhat compile",

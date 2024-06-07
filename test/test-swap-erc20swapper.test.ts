@@ -3,19 +3,25 @@ import { expect } from "chai";
 import { Network } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { ZERO_ADDRESS, getCoinsAndUniswapData, getNetworkName } from "../utils";
+import {
+  FeeAmount,
+  ZERO_ADDRESS,
+  getCoinsAndUniswapData,
+  getNetworkName,
+} from "../utils";
 import { ERC20Abi } from "../utils/abis/ERC20Abi";
 import {
   ArbitraryERC20Swapper,
   ArbitraryERC20Swapper__factory,
 } from "../typechain-types";
 
-let feeTier = 3000;
+let feeTier = FeeAmount.MEDIUM;
 
 async function swapRouterFixture() {
   let signers: HardhatEthersSigner[] = await ethers.getSigners();
 
   let provider: Network = await ethers.provider.getNetwork();
+
   let networkName = await getNetworkName(provider);
   const { uniswapContracts, coins } = getCoinsAndUniswapData(networkName);
 

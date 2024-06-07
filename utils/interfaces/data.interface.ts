@@ -8,6 +8,13 @@ export interface UniswapContracts {
   swapRouter?: string;
   swapRouter02: string;
   quoterV2?: string;
+  factory?: string;
+}
+
+export enum FeeAmount {
+  LOW = 500,
+  MEDIUM = 3000,
+  HIGH = 10000,
 }
 
 ///

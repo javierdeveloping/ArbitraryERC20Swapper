@@ -1,9 +1,9 @@
 import { Network } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { ArbitraryERC20Swapper__factory } from "../typechain-types";
-import { getCoinsAndUniswapData, getNetworkName } from "../utils";
+import { FeeAmount, getCoinsAndUniswapData, getNetworkName } from "../utils";
 
-const feeTier = 3000;
+const feeTier = FeeAmount.MEDIUM;
 
 // scripts/deploy.js
 async function main() {
