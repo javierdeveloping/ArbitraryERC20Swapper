@@ -11,9 +11,6 @@ export const deploymentData: DeploymentData = {
   sepolia: {
     erc20Swapper: "0xA247Ca6eaaD3d8798F885cd03f3dd8EE98dB1FE5",
   },
-  local: {
-    erc20Swapper: "0xA247Ca6eaaD3d8798F885cd03f3dd8EE98dB1FE5",
-  },
 };
 
 export const uniswapData: UniswapData = {
