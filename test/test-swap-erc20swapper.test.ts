@@ -302,34 +302,3 @@ describe("Change configuration", async function () {
     expect(config[0]).is.equal(newSwapRouterAddress);
   });
 });
-
-/*   it("Quoter", async () => {
-    const token = "0xdac17f958d2ee523a2206206994597c13d831ec7";
-    const tokenDecimals = 6;
-    const ethAmount = "0.1";
-    const minOut = "5000";
-
-    const simpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
-    const simpleSwap = await simpleSwapFactory.deploy(
-      SwapRouterAddress,
-      quoterV2Address
-    );
-    await simpleSwap.deployed();
-
-
-    let signers = await hre.ethers.getSigners();
-
-
-    const [signer] = await ethers.getSigners();
-
-    const tx = await simpleSwap.quoteExactInputSingleWETHDai(
-      hre.ethers.utils.parseUnits("100", DAI_DECIMALS),
-      0,
-      {
-        gasLimit: 300000,
-      }
-    );
-    const answer = await tx.wait();
-    console.log({ tx });
-    console.log({ answer });
-  }); */

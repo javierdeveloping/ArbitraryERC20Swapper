@@ -40,12 +40,15 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: process.env.MAINNET_RPC_URL,
-      accounts: [`${process.env.TEST_PRIVATE_KEY}`],
+      accounts: [
+        process.env.PRODUCTION_KEY
+          ? `${process.env.PRODUCTION_KEY}`
+          : `${process.env.TEST_PRIVATE_KEY}`,
+      ],
       chainId: 1,
     },
     local: {
       url: process.env.GANACHE_OR_LOCAL_RPC_URL,
-      /*       accounts: [`${process.env.GANACHE_PRIVATE_KEY}`], */
     },
   },
 };

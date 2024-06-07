@@ -1,5 +1,8 @@
+import { ChainId, Token } from "@uniswap/sdk-core";
+import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
+import { computePoolAddress } from "@uniswap/v3-sdk";
 import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment, Network } from "hardhat/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
   FeeAmount,
   getCoinsAndUniswapData,
@@ -7,13 +10,10 @@ import {
   getNetworkName,
 } from "../utils";
 import { ERC20Abi } from "../utils/abis/ERC20Abi";
-import { computePoolAddress } from "@uniswap/v3-sdk";
-import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import { ChainId, Token } from "@uniswap/sdk-core";
 import { quoterV2Abi } from "../utils/abis/QuoterV2Abi";
 import { QuoterV2 } from "../utils/interfaces/QuoterV2";
-import { network } from "hardhat";
 
+//Task to execute a swap, exchanging Ethereum for a specific token, receiving at least a minimum amount of tokens
 task("swap", "Swap ether to token'")
   .addParam("eth", "The amount in Ether to sent (ex: 0.001 , 0.1 , 1)")
   .addParam("token", "The address of the token to receive")
@@ -113,6 +113,7 @@ task("swap", "Swap ether to token'")
     console.log({ tokenBalanceAfter });
   });
 
+//Get pool information for WETH/token to receive and expected token amount to receive
 task(
   "quote",
   "Get pool information for WETH/token to receive and expected token amount to receive"
@@ -167,6 +168,7 @@ task(
     let chainId = Number(provider.chainId);
 
     //if working with forks, considered network is sepolia.
+    //change
 
     if (chainId == 31337 || chainId == 1337) {
       chainId = ChainId.SEPOLIA;
