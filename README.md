@@ -55,6 +55,22 @@ https://sepolia.etherscan.io/address/0xa247ca6eaad3d8798f885cd03f3dd8ee98db1fe5
    TEST_PRIVATE_KEY=
    ```
 
+## Compile
+
+1. Compile all the contract:
+
+   ```
+   yarn run compile
+   ```
+
+## Deployment to production or testnet
+
+1. Use the following command to deploy to Ethereum mainnet or Sepolia network
+
+   ```
+   yarn run deploy-erc20swapper mainnet|sepolia
+   ```
+
 ## Test
 
 The proposed testing process will load Uniswap and coins data related to Sepolia network by default when forking networks or using hardhat, local or localhost as network parameter.
