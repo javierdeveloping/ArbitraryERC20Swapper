@@ -2,11 +2,9 @@
 
 ## :warning: Disclaimer :warning:
 
-:warning:
+:bangbang: Author CAN NOT guarantee the safety of the repository, referring to links to external webpages from files in this repository, the repository files themselves and all primary and subsequent installed packages using installation commands.
 
-Author CAN NOT guarantee the safety of the repository, referring to links to external webpages from files in this repository, the repository files themselves and all primary and subsequent installed packages using installation commands.
-
-The author of this repository is not responsible for the use or the security issues working with this repository could produce.
+:bangbang: The author of this repository is not responsible for the use and the security issues working with this repository could produce.
 
 ## Description
 
@@ -14,13 +12,16 @@ This project involves the development of an ERC20 Swapper based on Uniswap proto
 
 This ERC20 swapper has been developed based on Uniswap V3 protocol.
 
+<br>
 There are three parameters that are set up when deploying this swapper:
+<br><br>
 
-**wrappedETH**: official wrapped Ethereum address
+_wrappedETH_: official wrapped Ethereum address
 
-**feeTier**: fee user will have to pay to swap Ether to another token inside a Uniswap pool (ex: 3000 -> 0.3%)
+_feeTier_: fee user will have to pay to swap Ether to another token inside a Uniswap pool (ex: 3000 -> 0.3%)
 
-**swapRouter**: address of Uniswap router used to swap Ether to desired arbitrary token
+_swapRouter_: address of Uniswap router used to swap Ether to desired arbitrary token
+<br><br>
 
 Uniswap SwapRouter02 supports swaps in both V2 and V3 pools. It is an upgraded version of SwapRouter contract within Uniswap v3 protocol and is mainly designed to be multicall.
 
