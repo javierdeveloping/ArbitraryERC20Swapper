@@ -17,7 +17,9 @@ async function main() {
 
   const { uniswapContracts, coins } = getCoinsAndUniswapData(networkName);
 
-  console.log({ networkName });
+  console.log(
+    `if forking base network would be (check getNetworkName function): ${networkName}`
+  );
   console.log({ uniswapContracts });
   console.log({ coins });
 

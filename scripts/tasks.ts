@@ -168,7 +168,7 @@ task(
 
     //if working with forks, considered network is sepolia.
 
-    if (chainId == 31337) {
+    if (chainId == 31337 || chainId == 1337) {
       chainId = ChainId.SEPOLIA;
     }
     // Create token instances: WETH and given token
