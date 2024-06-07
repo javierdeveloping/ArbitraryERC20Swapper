@@ -2,9 +2,9 @@
 
 ## :warning: Disclaimer :warning:
 
-:bangbang: Author CAN NOT guarantee the safety of the repository, referring to links to external webpages from files in this repository, the repository files themselves and all primary and subsequent installed packages using installation commands.
+:bangbang: Author CAN NOT guarantee the safety of the repository, referring to links to external webpages from files in this repository, the repository files themselves and all the primary and subsequent installed packages using installation commands.
 
-:bangbang: The author of this repository is not responsible for the use and the security issues working with this repository could produce.
+:bangbang: The author of this repository is not responsible for the use of the repository and the security issues working with it could produce.
 
 ## Description
 
