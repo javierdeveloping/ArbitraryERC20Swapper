@@ -240,6 +240,50 @@ describe("Swap feature", async function () {
         })
     ).to.be.revertedWith("Too little received");
   });
+
+  it("Swap can not be executed if contract is paused", async function () {
+    const {
+      signer,
+      others,
+      provider,
+      uniswapContracts,
+      coins,
+      arbitraryERC20Swapper,
+    } = await loadFixture(swapRouterFixture);
+
+    //Deployer changes feeTier
+    let tx = await arbitraryERC20Swapper.pause();
+    tx.wait();
+
+    const isPaused = await arbitraryERC20Swapper.paused();
+
+    expect(isPaused).is.equal(true);
+
+    //Get a new signer as the user who will do the swap
+    const user = others[1];
+
+    //Show USDT coin data
+    console.log(coins.USDT);
+
+    if (!coins.USDT) {
+      expect.fail("No info for USDT token");
+    }
+    const token = coins.USDT;
+    const tokenContract = new ethers.Contract(token.address, ERC20Abi, user);
+
+    const amountIn = ethers.parseEther("0.1");
+    const minimumAmount = ethers.parseUnits("1", token.decimals);
+    //swap 0.1 ETH to USDT
+    //Min amount set to 10.000USDT per ETH
+    await expect(
+      arbitraryERC20Swapper
+        .connect(user)
+        .swapEtherToToken(token.address, minimumAmount, {
+          gasLimit: 300000,
+          value: amountIn,
+        })
+    ).to.be.reverted;
+  });
 });
 
 describe("Change configuration", async function () {
