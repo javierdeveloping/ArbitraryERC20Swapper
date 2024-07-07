@@ -36,8 +36,10 @@
   },
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy-erc20swapper": "npx hardhat run ./scripts/deploy-erc20swapper.ts --network ",
     "test-swap-erc20swapper": "npx hardhat test ./test/test-swap-erc20swapper.test.ts --network ",
-    "swap-ether-to-token": "npx hardhat run ./scripts/swap-ether-to-token.ts --network "
+    "deploy-erc20swapper": "npx hardhat run ./scripts/deploy-erc20swapper.ts --network ",
+    "swap-ether-to-token": "npx hardhat run ./scripts/swap-ether-to-token.ts --network ",
+    "validate-upgrade-erc20swapper": "npx hardhat run ./scripts/validate-upgrade-erc20swapper.ts ",
+    "upgrade-erc20swapper": "npx hardhat run ./scripts/upgrade-erc20swapper.ts --network  "
   }
 }
